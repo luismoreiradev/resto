@@ -1,17 +1,35 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { createRoot } from 'react-dom/client';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Get the root container
+const rootContainer = document.getElementById('root');
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Check if the root container exists
+if (rootContainer) {
+  // Check if the root has already been created for this container
+  const existingRoot = rootContainer._reactRootContainer;
+
+  if (!existingRoot) {
+    // Create a new root if it doesn't exist
+    const root = createRoot(rootContainer);
+
+    // Render your application inside the root using the root.render method
+    root.render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    );
+  } else {
+    // Use the existing root and render the application inside it
+    existingRoot.render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    );
+  }
+} else {
+  console.error('Root container not found');
+}
