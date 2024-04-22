@@ -1,123 +1,108 @@
 import React, { useEffect, useState } from 'react';
-
 import backEndCall from '../backEndCall';
+import Formulario from "../components/Formulario";
 
 function TodosLosGastos() {
-  // State to store the fetched data
   const [datos, setDatos] = useState([]);
-  const [consulta,setConsulta]=useState({
-    mes: "",
-    year: ""
-  });
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setConsulta({ ...consulta, [name]: value });
+  const [consulta, setConsulta] = useState("");
+  const [meses, setMeses] = useState([]);
+
+  useEffect(() => {
+    fetchMeses(); // Fetch meses data when component mounts
+  }, []);
+
+  const fetchMeses = () => {
+    backEndCall.get('/api/gm/meses')
+      .then(response => {
+        // Extract the month and year information and set the meses state
+        const mesesArray = response.data.map(dateString => {
+          const [year, month] = dateString.slice(0, 7).split('-');
+          return `${getMonthName(parseInt(month))}/${year}`;
+        });
+        setMeses(mesesArray);
+      })
+      .catch(error => {
+        console.error("Error fetching meses data:", error);
+      });
   };
 
-  // Fetch data from the API when the component mounts
-  /*
-  useEffect(() => {
-    backEndCall.get("/gm/gastos")
-      .then(function (response) {
-        // Update the state with the fetched data
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    setConsulta(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Split the selected value to extract month and year
+    const [month, year] = consulta.split('/');
+    backEndCall.get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
+      .then(response => {
         setDatos(response.data);
+        console.log(response.data);
       })
-      .catch(function (error) {
-        // Log any errors that occur during the fetch
+      .catch(error => {
         console.error("Error fetching data:", error);
       });
-  }, []); // Empty dependency array ensures this effect runs only once on mount
-*/
+  };
 
-  function handleSubmit(e) {
-    e.preventDefault(); // Prevent form submission from refreshing the page
-    // Make the API call with the selected month and year
-    backEndCall.get(`/api/gm/mes/${consulta.year}-${consulta.mes}-01`)
-    .then(function (response) {
-      // Update the state with the fetched data
-      setDatos(response.data);
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      // Log any errors that occur during the fetch
-      console.error("Error fetching data:", error);
-    });
+  // Helper function to get month name from number
+  const getMonthName = (monthNumber) => {
+    const months = [
+      'January', 'February', 'March', 'April',
+      'May', 'June', 'July', 'August',
+      'September', 'October', 'November', 'December'
+    ];
+    return months[monthNumber - 1];
+  };
 
+  // Helper function to get month number from name
+  const getMonthNumber = (monthName) => {
+    const months = {
+      'January': '01', 'February': '02', 'March': '03', 'April': '04',
+      'May': '05', 'June': '06', 'July': '07', 'August': '08',
+      'September': '09', 'October': '10', 'November': '11', 'December': '12'
+    };
+    return months[monthName];
+  };
 
-    backEndCall.get(`/api/gm/mes/${consulta.year}-${consulta.mes}-01`)
-      .then(function (response) {
-        // Update the state with the fetched data
-        setDatos(response.data);
-      })
-      .catch(function (error) {
-        // Log any errors that occur during the fetch
-        console.error("Error fetching data:", error);
-      });
-  }
   return (
     <div className="bg-amber-500 p-8">
-    <h1 className="text-center text-9xl">Todos los gastos</h1>
-    <p className="p-10 font-montserrat">
-      esta inonono ojon pagina esta vacia todavia pero ya la voy a llenar
-    </p>
-    <div className="max-w-md mx-auto">
-      <form onSubmit={handleSubmit} className="">
-        <div className="flex items-end  mb-4">
-          <div className="w-1/2 mr-4">
-            <label htmlFor="mes" className="block mb-2">
-              Mes:
-            </label>
-            <select
-              id="mes"
-              name="mes"
-              value={consulta.mes}
-              onChange={handleInputChange}
-              className="block w-full mt-1"
+      <h1 className="text-center text-9xl">Todos los gastos</h1>
+      <p className="p-10 font-montserrat">
+        esta inonono ojon pagina esta vacia todavia pero ya la voy a llenar
+      </p>
+      <div className="max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="">
+          <div className="flex items-end  mb-4">
+            <div className="w-1/2 mr-4">
+              <label htmlFor="mes" className="block mb-2">
+                Seleccione mes y año:
+              </label>
+              <select
+                id="mes"
+                value={consulta}
+                onChange={handleInputChange}
+                className="block w-full mt-1"
+              >
+                <option value="">Seleccione mes y año</option>
+                {meses.map((option, index) => (
+                  <option key={index} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="  block ml-4 px-1 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 whitespace-nowrap"
             >
-              <option value="">Seleccione mes</option>
-              <option value="01">Enero</option>
-              <option value="02">Febrero</option>
-              <option value="03">Marzo</option>
-              <option value="04">Abril</option>
-              <option value="05">Mayo</option>
-              <option value="06">Junio</option>
-              <option value="07">Julio</option>
-              <option value="08">Agosto</option>
-              <option value="09">Septiembre</option>
-              <option value="10">Octubre</option>
-              <option value="11">Noviembre</option>
-              <option value="12">Diciembre</option>
-            </select>
+              Submit
+            </button>
           </div>
-          <div className="w-1/2">
-            <label htmlFor="year" className="block mb-2">
-              Año:
-            </label>
-            <input
-              type="number"
-              id="year"
-              name="year"
-              value={consulta.year}
-              onChange={handleInputChange}
-              className="block w-full mt-1"
-            />
-          </div>
-          <button
-            type="submit"
-            className="  block ml-4 px-1 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 whitespace-nowrap"
-          >
-            Submit Month
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
+      {datos.map((data, index) => (
+        <Formulario key={index} data={data}  />
+      ))}
     </div>
-    {/* Render the fetched data here */}
-    <ul>
-      {/*datos.map((receta, index) => (
-        <li key={index}>{receta}</li>
-      ))*/}
-    </ul>
-  </div>
   );
 }
 

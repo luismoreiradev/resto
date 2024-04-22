@@ -2,7 +2,7 @@ import axios from 'axios';
 const BASE_URL = "https://amigazo.com.ar:8000";
 
 let axiosConfigCall = { headers: {
-    token: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNCwiZW1haWwiOiJ5b0BhY2EuY29tLmFyIiwidW50aWwiOjE3MTM2MjQ1MzE4MTQsImFtYmllbnRlIjoiREVTQSIsImlhdCI6MTcxMzUzODEzMX0.9RO2MtEjLAWraA-Ir1U1aGrgTFVmMqvnP1TFlnE4VdI"
+    token: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNCwiZW1haWwiOiJ5b0BhY2EuY29tLmFyIiwidW50aWwiOjE3MTM4NzY2MzcwMzMsImFtYmllbnRlIjoiREVTQSIsImlhdCI6MTcxMzc5MDIzN30.IwHIuJF0VGfEZ-9DGRvTwCNkvBCnuV236n-9yo5-SRg"
 }
 };
 

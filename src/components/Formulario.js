@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import backEndCall from "../backEndCall";
 
-function Formulario() {
+function Formulario({ data }) { // Pass data as a prop
   // Custom hook for managing bimestral checkbox state
   function useBimestralCheckbox() {
-    const [esBimestral, setEsBimestral] = useState(true);
+    const [esBimestral, setEsBimestral] = useState(data && data.esBimestral !== undefined ? data.esBimestral : true);
 
     const handleCheckboxChange = (e) => {
       const { name, checked } = e.target;
@@ -20,15 +20,12 @@ function Formulario() {
   }
 
   const [form, setForm] = useState({
-    mes: "",
-    nombre: "",
-    moneda: "",
-    monto: "",
-    esBimestral: true,
+    mes:  data && data.mes ? data.mes : "", // Assuming "mes" is part of the data object,
+    nombre: data && data.nombre ? data.nombre : "", // Check if data exists before accessing its properties
+    moneda: data && data.moneda ? data.moneda : "", // Check if data exists before accessing its properties
+    monto:  data && data.monto ? data.monto : "", // Include "monto" field in the initial state"",
+    esBimestral: data && data.esBimestral !== undefined ? data.esBimestral : true, // Update the initial state of the checkbox,
   });
-/*
-  const [mes, setMes] = useState('');
-  */
 
   // Array of month options
   const months = [
@@ -105,20 +102,7 @@ function Formulario() {
 })}
       </select>
     </div>
-           {/* <div className="flex items-center">
-              <div className="w-1/2 mr-4">
-                <label htmlFor="mes" className="block mb-2">
-                  Mes:
-                </label>
-                <input
-                  type="date"
-                  id="mes"
-                  name="mes"
-                  value={form.mes}
-                  onChange={handleInputChange}
-                ></input>
-              </div>
-  </div>*/}
+         
 
             <div className="flex items-center">
               <div className="w-1/2 mr-4">
@@ -212,3 +196,4 @@ function Formulario() {
 }
 
 export default Formulario;
+
