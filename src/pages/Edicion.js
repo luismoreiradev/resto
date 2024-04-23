@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import backEndCall from '../backEndCall';
 import Formulario from "../components/Formulario";
 
-function TodosLosGastos() {
+function Edicion() {
   const [datos, setDatos] = useState([]);
   const [consulta, setConsulta] = useState("");
   const [meses, setMeses] = useState([]);
@@ -106,4 +106,4 @@ function TodosLosGastos() {
   );
 }
 
-export default TodosLosGastos;
+export default Edicion;

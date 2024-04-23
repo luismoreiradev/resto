@@ -6,6 +6,7 @@ import Pagina1 from './pages/Pagina1';
 import Menu from './components/Menu';
 import Pagina2 from './pages/Pagina2';
 import TodosLosGastos from './pages/TodosLosGastos';
+import Edicion from './pages/Edicion';
 import { createRoot } from 'react-dom/client';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/pagina1" element={<Pagina1 />} />
         <Route path="/pagina2" element={<Pagina2 />} />
         <Route path="/todoslosgastos" element={<TodosLosGastos />} />
+        <Route path="/edicion" element={<Edicion />} />
       </Routes>
     </BrowserRouter>
   );

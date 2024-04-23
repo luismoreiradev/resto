@@ -15,6 +15,7 @@ function Menu() {
               <li><Link to="/pagina2" className="text-white">Pagina 2</Link></li>
               <li><Link to="/" className="text-white">Home</Link></li>
               <li><Link to="/todoslosgastos" className="text-white">Todos los gastos</Link></li>
+              <li><Link to="/edicion" className="text-white">Edicion</Link></li>
             </ul>
           </div>
           <div className="md:hidden">

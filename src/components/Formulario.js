@@ -27,6 +27,8 @@ function Formulario({ data }) { // Pass data as a prop
     esBimestral: data && data.esBimestral !== undefined ? data.esBimestral : true, // Update the initial state of the checkbox,
   });
 
+  const [id,setId]=useState(null)
+
   // Array of month options
   const months = [
     { value: '01', label: 'Enero' },
@@ -56,8 +58,16 @@ function Formulario({ data }) { // Pass data as a prop
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: newValue,
+      // Check if the changed input is bimestral or mensual and update the other one accordingly
+      esBimestral: name === 'bimestral' ? newValue : prevForm.esBimestral,
+      // Similarly, update the other one if mensual is changed
+      mensual: name === 'mensual' ? newValue : prevForm.mensual,
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -67,7 +77,7 @@ function Formulario({ data }) { // Pass data as a prop
     backEndCall
       .post("/api/gm/", formData)
       .then((response) => {
-        console.log("dato guardado:", response.data);
+        console.log("dato guardado:", response);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -75,17 +85,22 @@ function Formulario({ data }) { // Pass data as a prop
     console.log("Form submitted:", formData);
   };
 
-  function irAtodosLosGastos() {
-    navigate("/todosLosGastos");
+  function editar(id, formData) {
+    const updatedFormData = { ...formData, monto: parseInt(formData.monto) }; // Ensure monto is parsed as an integer
+    backEndCall
+      .put(`/api/gm/${id}`, updatedFormData) // Pass updated form data to the API call
+      .then((response) => {
+        console.log("dato guardado:", response);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
 
   return (
     <div className="bg-amber-500 flex flex-col items-center">
       <div className="min-h-screen bg-amber-500 py-6 flex flex-col justify-center sm:py-12">
-        <h1 className="text-center text-9xl mb-8">Pagina1</h1>
-        <p className="p-10 font-montserrat mb-8">
-          esta pagina esta vacia todavia pero ya la voy a llenar
-        </p>
+       
         <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -187,8 +202,8 @@ function Formulario({ data }) { // Pass data as a prop
             </div>
           </form>
         </div>
-        <button onClick={irAtodosLosGastos} className="mt-8 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
-          ver todos
+        <button    onClick={() => editar(data._id, form)} className="mt-8 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
+          Editar
         </button>
       </div>
     </div>
