@@ -92,7 +92,7 @@ function Formulario({ data, esconder, fetchDataAfterDelete }) {
       .delete(`/api/gm/${id}`)
       .then((response) => {
         console.log("dato eliminado:", response);
-        fetchDataAfterDelete();
+        fetchDataAfterDelete(id); // Pass the deleted item id
       })
       .catch((error) => {
         console.error("Error:", error);

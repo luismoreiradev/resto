@@ -12,7 +12,7 @@ function Edicion() {
 
   useEffect(() => {
     fetchMeses();
-  }, [datos]);
+  }, []);
 
   const fetchMeses = () => {
     backEndCall
@@ -55,9 +55,8 @@ function Edicion() {
     backEndCall
       .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
       .then((response) => {
-        setDatos(response);
+        setDatos(response); // Update datos state with the response data
         console.log("Updated datos after delete:", response);
-        navigate("/pagina1");
       })
       .catch((error) => {
         setError(error);
@@ -101,9 +100,16 @@ function Edicion() {
     return months[monthName];
   };
 
-  useEffect(() => {
-    console.log("Datos updated:", datos);
-  }, [datos]); // Log datos whenever it changes
+  const handleDelete = (deletedItemId) => {
+    backEndCall
+      .delete(`/api/gm/${deletedItemId}`)
+      .then(() => {
+        fetchDataAfterDelete();
+      })
+      .catch((error) => {
+        console.error("Error deleting item:", error);
+      });
+  };
 
   return (
     <div className="bg-amber-500 p-8">
@@ -142,14 +148,15 @@ function Edicion() {
         </form>
       </div>
 
-      {datos.map((data, index) => (
-        <Formulario
-          key={index}
-          data={data}
-          esconder={true}
-          fetchDataAfterDelete={fetchDataAfterDelete}
-        />
-      ))}
+      {datos.map((data) => (
+  <Formulario
+    key={data._id} // Ensure each component has a unique key based on the item's ID
+    data={data}
+    esconder={true}
+    fetchDataAfterDelete={fetchDataAfterDelete}
+    onDelete={() => handleDelete(data._id)}
+  />
+))}
     </div>
   );
 }
