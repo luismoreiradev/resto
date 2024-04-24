@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import backEndCall from "../backEndCall";
 import Formulario from "../components/Formulario";
+import { useNavigate } from "react-router-dom";
 
 function Edicion() {
   const [datos, setDatos] = useState([]);
   const [consulta, setConsulta] = useState("");
   const [meses, setMeses] = useState([]);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     fetchMeses();
@@ -55,6 +57,7 @@ function Edicion() {
       .then((response) => {
         setDatos(response);
         console.log("Updated datos after delete:", response);
+        navigate("/pagina1");
       })
       .catch((error) => {
         setError(error);
