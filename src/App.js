@@ -19,6 +19,7 @@ function App() {
         <Route path="/pagina2" element={<Pagina2 />} />
         <Route path="/todoslosgastos" element={<TodosLosGastos />} />
         <Route path="/edicion" element={<Edicion />} />
+        
       </Routes>
     </BrowserRouter>
   );

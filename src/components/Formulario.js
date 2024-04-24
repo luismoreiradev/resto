@@ -2,78 +2,68 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import backEndCall from "../backEndCall";
 
-function Formulario({ data }) { // Pass data as a prop
-  // Custom hook for managing bimestral checkbox state
-  function useBimestralCheckbox() {
-    const [esBimestral, setEsBimestral] = useState(data && data.esBimestral !== undefined ? data.esBimestral : true);
+function useBimestralCheckbox(initialState) {
+  const [esBimestral, setEsBimestral] = useState(initialState);
 
-    const handleCheckboxChange = (e) => {
-      const { name, checked } = e.target;
-      if (name === "bimestral" && checked) {
-        setEsBimestral(true);
-      } else if (name === "mensual" && checked) {
-        setEsBimestral(false);
-      }
-    };
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    if (name === "bimestral" && checked) {
+      setEsBimestral(true);
+    } else if (name === "mensual" && checked) {
+      setEsBimestral(false);
+    }
+  };
 
-    return [esBimestral, handleCheckboxChange];
-  }
+  return [esBimestral, handleCheckboxChange];
+}
 
+function Formulario({ data, esconder, fetchDataAfterDelete }) {
+  const [mostrar, setMostrar] = useState(!esconder);
   const [form, setForm] = useState({
-    mes:  data && data.mes ? data.mes : "", // Assuming "mes" is part of the data object,
-    nombre: data && data.nombre ? data.nombre : "", // Check if data exists before accessing its properties
-    moneda: data && data.moneda ? data.moneda : "", // Check if data exists before accessing its properties
-    monto:  data && data.monto ? data.monto : "", // Include "monto" field in the initial state"",
-    esBimestral: data && data.esBimestral !== undefined ? data.esBimestral : true, // Update the initial state of the checkbox,
+    mes: data && data.mes ? data.mes : "",
+    nombre: data && data.nombre ? data.nombre : "",
+    moneda: data && data.moneda ? data.moneda : "",
+    monto: data && data.monto ? data.monto : "",
+    esBimestral:
+      data && data.esBimestral !== undefined ? data.esBimestral : true,
   });
 
-  const [id,setId]=useState(null)
+  const [id, setId] = useState(null);
 
-  // Array of month options
   const months = [
-    { value: '01', label: 'Enero' },
-    { value: '02', label: 'Febrero' },
-    { value: '03', label: 'Marzo' },
-    { value: '04', label: 'Abril' },
-    { value: '05', label: 'Mayo' },
-    { value: '06', label: 'Junio' },
-    { value: '07', label: 'Julio' },
-    { value: '08', label: 'Agosto' },
-    { value: '09', label: 'Septiembre' },
-    { value: '10', label: 'Octubre' },
-    { value: '11', label: 'Noviembre' },
-    { value: '12', label: 'Diciembre' }
+    { value: "01", label: "Enero" },
+    { value: "02", label: "Febrero" },
+    { value: "03", label: "Marzo" },
+    { value: "04", label: "Abril" },
+    { value: "05", label: "Mayo" },
+    { value: "06", label: "Junio" },
+    { value: "07", label: "Julio" },
+    { value: "08", label: "Agosto" },
+    { value: "09", label: "Septiembre" },
+    { value: "10", label: "Octubre" },
+    { value: "11", label: "Noviembre" },
+    { value: "12", label: "Diciembre" },
   ];
 
-  // Handle change when a month is selected
- /* const handleMonthChange = (e) => {
-    setMes(e.target.value);
-    
-  };
-  */
-
-
-  const [esBimestral, handleCheckboxChange] = useBimestralCheckbox();
+  const [esBimestral, handleCheckboxChange] = useBimestralCheckbox(
+    data && data.esBimestral !== undefined ? data.esBimestral : true
+  );
 
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === 'checkbox' ? checked : value;
+    const newValue = type === "checkbox" ? checked : value;
     setForm((prevForm) => ({
       ...prevForm,
       [name]: newValue,
-      // Check if the changed input is bimestral or mensual and update the other one accordingly
-      esBimestral: name === 'bimestral' ? newValue : prevForm.esBimestral,
-      // Similarly, update the other one if mensual is changed
-      mensual: name === 'mensual' ? newValue : prevForm.mensual,
+      esBimestral: name === "bimestral" ? newValue : prevForm.esBimestral,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = { ...form, esBimestral: esBimestral };
-    // Do something with the form data, like sending it to a server
     backEndCall
       .post("/api/gm/", formData)
       .then((response) => {
@@ -86,11 +76,23 @@ function Formulario({ data }) { // Pass data as a prop
   };
 
   function editar(id, formData) {
-    const updatedFormData = { ...formData, monto: parseInt(formData.monto) }; // Ensure monto is parsed as an integer
+    const updatedFormData = { ...formData, monto: parseInt(formData.monto) };
     backEndCall
-      .put(`/api/gm/${id}`, updatedFormData) // Pass updated form data to the API call
+      .put(`/api/gm/${id}`, updatedFormData)
       .then((response) => {
         console.log("dato guardado:", response);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  function eliminar(id) {
+    backEndCall
+      .delete(`/api/gm/${id}`)
+      .then((response) => {
+        console.log("dato eliminado:", response);
+        fetchDataAfterDelete();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -100,24 +102,31 @@ function Formulario({ data }) { // Pass data as a prop
   return (
     <div className="bg-amber-500 flex flex-col items-center">
       <div className="min-h-screen bg-amber-500 py-6 flex flex-col justify-center sm:py-12">
-       
         <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-      <label htmlFor="mes" className="mr-2 mb-2">Seleccione un mes:</label>
-      <select id="mes" name="mes" value={form.mes} onChange={handleInputChange}>
-        <option value="">-- Seleccione un mes--</option>
-        {months.map((month) => {
-  const value = `2024-${month.value}`;
-  return (
-    <option key={month.value} value={value}>
-      {month.label}
-    </option>
-  );
-})}
-      </select>
-    </div>
-         
+            {mostrar && (
+              <div>
+                <label htmlFor="mes" className="mr-2 mb-2">
+                  Seleccione un mes:
+                </label>
+                <select
+                  id="mes"
+                  name="mes"
+                  value={form.mes}
+                  onChange={handleInputChange}
+                >
+                  <option value="">-- Seleccione un mes--</option>
+                  {months.map((month) => {
+                    const value = `2024-${month.value}`;
+                    return (
+                      <option key={month.value} value={value}>
+                        {month.label}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            )}
 
             <div className="flex items-center">
               <div className="w-1/2 mr-4">
@@ -190,20 +199,29 @@ function Formulario({ data }) { // Pass data as a prop
             </div>
 
             <div className="flex items-center">
-              <div className="w-1/3">
-                {/* Include other form fields here */}
-              </div>
-              <button
-                type="submit"
-                className="w-1/3 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
-              >
-                Submit Month
-              </button>
+              <div className="w-1/3">{/* Include other form fields here */}</div>
+              {mostrar && (
+                <button
+                  type="submit"
+                  className="w-1/3 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                >
+                  Submit Month
+                </button>
+              )}
             </div>
           </form>
         </div>
-        <button    onClick={() => editar(data._id, form)} className="mt-8 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
+        <button
+          onClick={() => editar(data._id, form)}
+          className="mt-8 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+        >
           Editar
+        </button>
+        <button
+          onClick={() => eliminar(data._id)}
+          className="ml-4 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-600"
+        >
+          Delete
         </button>
       </div>
     </div>
@@ -211,4 +229,3 @@ function Formulario({ data }) { // Pass data as a prop
 }
 
 export default Formulario;
-

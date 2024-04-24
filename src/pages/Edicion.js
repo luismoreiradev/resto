@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import backEndCall from '../backEndCall';
+import React, { useEffect, useState } from "react";
+import backEndCall from "../backEndCall";
 import Formulario from "../components/Formulario";
 
 function Edicion() {
   const [datos, setDatos] = useState([]);
   const [consulta, setConsulta] = useState("");
   const [meses, setMeses] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMeses(); // Fetch meses data when component mounts
-  }, []);
+    fetchMeses();
+  }, [datos]);
 
   const fetchMeses = () => {
-    backEndCall.get('/api/gm/meses')
-      .then(result => {
-        // Extract the month and year information and set the meses state
-        const mesesArray = result.map(dateString => {
-          const [year, month] = dateString.slice(0, 7).split('-');
+    backEndCall
+      .get("/api/gm/meses")
+      .then((result) => {
+        const mesesArray = result.map((dateString) => {
+          const [year, month] = dateString.slice(0, 7).split("-");
           return `${getMonthName(parseInt(month))}/${year}`;
         });
         setMeses(mesesArray);
       })
-      .catch(error => {
+      .catch((error) => {
+        setError(error);
         console.error("Error fetching meses data:", error);
       });
   };
@@ -33,43 +35,78 @@ function Edicion() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Split the selected value to extract month and year
-    const [month, year] = consulta.split('/');
-    backEndCall.get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
-      .then(response => {
+    const [month, year] = consulta.split("/");
+    backEndCall
+      .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
+      .then((response) => {
         setDatos(response);
-        console.log(response);
+        console.log("Updated datos after submit:", response);
       })
-      .catch(error => {
+      .catch((error) => {
+        setError(error);
         console.error("Error fetching data:", error);
       });
   };
 
-  // Helper function to get month name from number
+  const fetchDataAfterDelete = () => {
+    const [month, year] = consulta.split("/");
+    backEndCall
+      .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
+      .then((response) => {
+        setDatos(response);
+        console.log("Updated datos after delete:", response);
+      })
+      .catch((error) => {
+        setError(error);
+        console.error("Error fetching data after delete:", error);
+      });
+  };
+
   const getMonthName = (monthNumber) => {
     const months = [
-      'January', 'February', 'March', 'April',
-      'May', 'June', 'July', 'August',
-      'September', 'October', 'November', 'December'
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     return months[monthNumber - 1];
   };
 
-  // Helper function to get month number from name
   const getMonthNumber = (monthName) => {
     const months = {
-      'January': '01', 'February': '02', 'March': '03', 'April': '04',
-      'May': '05', 'June': '06', 'July': '07', 'August': '08',
-      'September': '09', 'October': '10', 'November': '11', 'December': '12'
+      January: "01",
+      February: "02",
+      March: "03",
+      April: "04",
+      May: "05",
+      June: "06",
+      July: "07",
+      August: "08",
+      September: "09",
+      October: "10",
+      November: "11",
+      December: "12",
     };
     return months[monthName];
   };
+
+  useEffect(() => {
+    console.log("Datos updated:", datos);
+  }, [datos]); // Log datos whenever it changes
 
   return (
     <div className="bg-amber-500 p-8">
       <h1 className="text-center text-9xl">Todos los gastos</h1>
       <p className="p-10 font-montserrat">
-        esta inonono ojon pagina esta vacia todavia pero ya la voy a llenar
+        Esta página está vacía todavía, pero ya la voy a llenar.
       </p>
       <div className="max-w-md mx-auto">
         <form onSubmit={handleSubmit} className="">
@@ -86,7 +123,9 @@ function Edicion() {
               >
                 <option value="">Seleccione mes y año</option>
                 {meses.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
             </div>
@@ -99,8 +138,14 @@ function Edicion() {
           </div>
         </form>
       </div>
+
       {datos.map((data, index) => (
-        <Formulario key={index} data={data}  />
+        <Formulario
+          key={index}
+          data={data}
+          esconder={true}
+          fetchDataAfterDelete={fetchDataAfterDelete}
+        />
       ))}
     </div>
   );
