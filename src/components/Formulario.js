@@ -17,7 +17,7 @@ function useBimestralCheckbox(initialState) {
   return [esBimestral, handleCheckboxChange];
 }
 
-function Formulario({ data, esconder, fetchDataAfterDelete }) {
+function Formulario({ data, esconder, fetchDataAfterDelete, onSaveChanges }) {
   const [mostrar, setMostrar] = useState(!esconder);
   const [form, setForm] = useState({
     mes: data && data.mes ? data.mes : "",
@@ -81,6 +81,8 @@ function Formulario({ data, esconder, fetchDataAfterDelete }) {
       .put(`/api/gm/${id}`, updatedFormData)
       .then((response) => {
         console.log("dato guardado:", response);
+        onSaveChanges(updatedFormData); // Trigger onSaveChanges callback
+        setMostrar(false); // Hide the form after editing
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -93,6 +95,7 @@ function Formulario({ data, esconder, fetchDataAfterDelete }) {
       .then((response) => {
         console.log("dato eliminado:", response);
         fetchDataAfterDelete(id); // Pass the deleted item id
+        setMostrar(false); // Hide the form after deleting
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -200,32 +203,37 @@ function Formulario({ data, esconder, fetchDataAfterDelete }) {
 
             <div className="flex items-center">
               <div className="w-1/3">{/* Include other form fields here */}</div>
-              {mostrar && (
+              <div className="w-1/3">
                 <button
                   type="submit"
-                  className="w-1/3 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                  className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
                 >
-                  Submit Month
+                  Guardar
                 </button>
-              )}
+              </div>
+              <div className="w-1/3">
+                <button
+                  onClick={() => editar(data._id, form)}
+                  className="w-full px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                >
+                  Editar
+                </button>
+              </div>
             </div>
           </form>
+          <div className="flex items-center justify-center mt-4">
+            <button
+              onClick={() => eliminar(data._id)}
+              className="px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-600"
+            >
+              Eliminar
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => editar(data._id, form)}
-          className="mt-8 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
-        >
-          Editar
-        </button>
-        <button
-          onClick={() => eliminar(data._id)}
-          className="ml-4 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:bg-red-600"
-        >
-          Delete
-        </button>
       </div>
     </div>
   );
 }
 
 export default Formulario;
+

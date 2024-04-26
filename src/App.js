@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Pagina1 from './pages/Pagina1';
+import Lectura from './pages/Lectura';
 import Menu from './components/Menu';
 import Pagina2 from './pages/Pagina2';
 import TodosLosGastos from './pages/TodosLosGastos';
@@ -15,7 +15,7 @@ function App() {
       <Menu />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/pagina1" element={<Pagina1 />} />
+        <Route path="/lectura" element={<Lectura />} />
         <Route path="/pagina2" element={<Pagina2 />} />
         <Route path="/todoslosgastos" element={<TodosLosGastos />} />
         <Route path="/edicion" element={<Edicion />} />

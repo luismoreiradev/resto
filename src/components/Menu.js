@@ -11,7 +11,7 @@ function Menu() {
           </div>
           <div className="hidden md:block">
             <ul className="flex items-center space-x-8">
-              <li><Link to="/pagina1" className="text-white">Pagina 1</Link></li>
+              <li><Link to="/lectura" className="text-white">Lectura</Link></li>
               <li><Link to="/pagina2" className="text-white">Pagina 2</Link></li>
               <li><Link to="/" className="text-white">Home</Link></li>
               <li><Link to="/todoslosgastos" className="text-white">Todos los gastos</Link></li>
@@ -29,7 +29,7 @@ function Menu() {
         {/* Mobile Menu */}
         <div className="mobile-menu hidden md:hidden">
           <ul className="mt-4 space-y-4">
-            <li><Link to="/pagina1" className="block px-4 py-2 text-white bg-gray-900 rounded">Pagina 1</Link></li>
+            <li><Link to="/lectura" className="block px-4 py-2 text-white bg-gray-900 rounded">Lectura</Link></li>
             <li><Link to="/pagina2" className="block px-4 py-2 text-white bg-gray-900 rounded">Pagina 2</Link></li>
             <li><Link to="/" className="block px-4 py-2 text-white bg-gray-900 rounded">Home</Link></li>
             <li><Link to="/todoslosgastos" className="block px-4 py-2 text-white bg-gray-900 rounded">Todos los gastos</Link></li>
