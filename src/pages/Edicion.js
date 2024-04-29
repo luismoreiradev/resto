@@ -95,6 +95,17 @@ function Edicion() {
       });
   };
 
+  const handleSaveChanges = (updatedData) => {
+    backEndCall
+      .put(`/api/gm/${updatedData._id}`, updatedData)
+      .then(() => {
+        fetchData();
+      })
+      .catch((error) => {
+        console.error("Error updating item:", error);
+      });
+  };
+
   const fetchDataAfterDelete = () => {
     const [month, year] = consulta.split("/");
     backEndCall
@@ -102,6 +113,19 @@ function Edicion() {
       .then((response) => {
         setDatos(response);
         console.log("Updated datos after delete:", response);
+      })
+      .catch((error) => {
+        setError(error);
+        console.error("Error fetching data after delete:", error);
+      });
+  };
+
+  const fetchData = () => {
+    const [month, year] = consulta.split("/");
+    backEndCall
+      .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
+      .then((response) => {
+        setDatos(response);
       })
       .catch((error) => {
         setError(error);
@@ -152,6 +176,7 @@ function Edicion() {
           data={data}
           onDelete={() => handleDelete(data._id)} // Pass the delete handler to Formulario
           isEditing={true}
+          onSaveChanges={handleSaveChanges}
           />
       ))}
     </div>
