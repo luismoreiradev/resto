@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import backEndCall from "../backEndCall";
 import Formulario from "../components/Formulario";
-import { useNavigate } from "react-router-dom";
 
 function Edicion() {
-  const [datos, setDatos] = useState([]);
   const [consulta, setConsulta] = useState("");
+  const [datos, setDatos] = useState([]);
   const [meses, setMeses] = useState([]);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     fetchMeses();
@@ -27,40 +25,6 @@ function Edicion() {
       .catch((error) => {
         setError(error);
         console.error("Error fetching meses data:", error);
-      });
-  };
-
-  const handleInputChange = (e) => {
-    const { value } = e.target;
-    setConsulta(value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const [month, year] = consulta.split("/");
-    backEndCall
-      .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
-      .then((response) => {
-        setDatos(response);
-        console.log("Updated datos after submit:", response);
-      })
-      .catch((error) => {
-        setError(error);
-        console.error("Error fetching data:", error);
-      });
-  };
-
-  const fetchDataAfterDelete = () => {
-    const [month, year] = consulta.split("/");
-    backEndCall
-      .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
-      .then((response) => {
-        setDatos(response); // Update datos state with the response data
-        console.log("Updated datos after delete:", response);
-      })
-      .catch((error) => {
-        setError(error);
-        console.error("Error fetching data after delete:", error);
       });
   };
 
@@ -100,14 +64,48 @@ function Edicion() {
     return months[monthName];
   };
 
-  const handleDelete = (deletedItemId) => {
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    setConsulta(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const [month, year] = consulta.split("/");
     backEndCall
-      .delete(`/api/gm/${deletedItemId}`)
+      .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
+      .then((response) => {
+        setDatos(response);
+        console.log("Updated datos after submit:", response);
+      })
+      .catch((error) => {
+        setError(error);
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  const handleDelete = (id) => {
+    backEndCall
+      .delete(`/api/gm/${id}`)
       .then(() => {
         fetchDataAfterDelete();
       })
       .catch((error) => {
         console.error("Error deleting item:", error);
+      });
+  };
+
+  const fetchDataAfterDelete = () => {
+    const [month, year] = consulta.split("/");
+    backEndCall
+      .get(`/api/gm/mes/${year}-${getMonthNumber(month)}-01`)
+      .then((response) => {
+        setDatos(response);
+        console.log("Updated datos after delete:", response);
+      })
+      .catch((error) => {
+        setError(error);
+        console.error("Error fetching data after delete:", error);
       });
   };
 
@@ -149,14 +147,13 @@ function Edicion() {
       </div>
 
       {datos.map((data) => (
-  <Formulario
-    key={data._id} // Ensure each component has a unique key based on the item's ID
-    data={data}
-    esconder={true}
-    fetchDataAfterDelete={fetchDataAfterDelete}
-    onDelete={() => handleDelete(data._id)}
-  />
-))}
+        <Formulario
+          key={data._id} // Ensure each component has a unique key based on the item's ID
+          data={data}
+          onDelete={() => handleDelete(data._id)} // Pass the delete handler to Formulario
+          isEditing={true}
+          />
+      ))}
     </div>
   );
 }

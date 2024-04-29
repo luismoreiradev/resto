@@ -1,3 +1,4 @@
+// Lectura.js
 import React, { useEffect, useState } from "react";
 import backEndCall from "../backEndCall";
 import Formulario from "../components/Formulario";
@@ -10,6 +11,7 @@ function Lectura() {
   const [error, setError] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // New state to track if it's editing or creating
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -90,6 +92,7 @@ function Lectura() {
 
   const handleEdit = (item) => {
     setEditItem(item);
+    setIsEditing(true); // Set editing mode to true
     setShowForm(true); // Toggle the showForm state
   };
 
@@ -197,9 +200,19 @@ function Lectura() {
               <td>{item.moneda}</td>
               <td>{item.monto}</td>
               <td>{item.esBimestral ? "Bimestral" : "Mensual"}</td>
-              <td>
-                <button onClick={() => handleEdit(item)}>Editar</button>
-                <button onClick={() => handleDelete(item._id)}>Eliminar</button>
+              <td className="flex gap-4">
+                <button
+                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                  onClick={() => handleEdit(item)}
+                >
+                  Editar
+                </button>
+                <button
+                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                  onClick={() => handleDelete(item._id)}
+                >
+                  Eliminar
+                </button>
               </td>
             </tr>
           ))}
@@ -211,6 +224,7 @@ function Lectura() {
           <Formulario
             data={editItem}
             esconder={true}
+            isEditing={isEditing} // Pass the isEditing prop to the Formulario component
             fetchDataAfterDelete={fetchDataAfterDelete}
             onSaveChanges={handleSaveChanges}
           />
@@ -221,4 +235,3 @@ function Lectura() {
 }
 
 export default Lectura;
-
