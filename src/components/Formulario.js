@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import backEndCall from "../backEndCall";
+import backEndCall from "../utils/backEndCall";
 
 function Formulario({ data, esconder, fetchDataAfterDelete, onSaveChanges, onDelete, isEditing }) {
   const [mostrar, setMostrar] = useState(!esconder);

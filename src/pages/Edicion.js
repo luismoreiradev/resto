@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import backEndCall from "../backEndCall";
+import backEndCall from "../utils/backEndCall";
 import Formulario from "../components/Formulario";
 
 function Edicion() {

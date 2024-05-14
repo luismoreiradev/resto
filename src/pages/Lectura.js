@@ -1,6 +1,6 @@
 // Lectura.js
 import React, { useEffect, useState } from "react";
-import backEndCall from "../backEndCall";
+import backEndCall from "../utils/backEndCall";
 import Formulario from "../components/Formulario";
 import { useNavigate } from "react-router-dom";
 

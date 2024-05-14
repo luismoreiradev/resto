@@ -16,6 +16,7 @@ function Menu() {
               <li><Link to="/" className="text-white">Home</Link></li>
               <li><Link to="/todoslosgastos" className="text-white">Todos los gastos</Link></li>
               <li><Link to="/edicion" className="text-white">Edicion</Link></li>
+              <li><Link to="/gastos" className="text-white">Gastos</Link></li>
             </ul>
           </div>
           <div className="md:hidden">
@@ -33,6 +34,7 @@ function Menu() {
             <li><Link to="/pagina2" className="block px-4 py-2 text-white bg-gray-900 rounded">Pagina 2</Link></li>
             <li><Link to="/" className="block px-4 py-2 text-white bg-gray-900 rounded">Home</Link></li>
             <li><Link to="/todoslosgastos" className="block px-4 py-2 text-white bg-gray-900 rounded">Todos los gastos</Link></li>
+            <li><Link to="/gastos" className="block px-4 py-2 text-white bg-gray-900 rounded">Gastos</Link></li>
           </ul>
         </div>
       </nav>

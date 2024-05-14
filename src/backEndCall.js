@@ -1,3 +1,4 @@
+/*
 import { wait } from '@testing-library/user-event/dist/utils';
 import axios, {AxiosError} from 'axios';
 
@@ -104,3 +105,4 @@ const getBaseUrl = () => {
 
     return BASE_URL;
 }
+*/
