@@ -21,9 +21,9 @@ function ItemConValor({ onItemChange }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
+    setFormData(prevFormData => ({
       ...prevFormData,
-      [name]: value,
+      [name]: name === 'fecha' ? new Date(value) : value // Convert 'fecha' to Date object
     }));
     shouldLogRef.current = true; // Set shouldLogRef to true after state update
   };

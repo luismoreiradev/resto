@@ -35,19 +35,31 @@ function Monthpicker({ onMesChange }) {
 
   const getMonthName = (monthNumber) => {
     const months = [
-      'January', 'February', 'March', 'April',
-      'May', 'June', 'July', 'August',
-      'September', 'October', 'November', 'December'
+      'enero', 'febrero', 'marzo', 'abril',
+    'mayo', 'junio', 'julio', 'agosto',
+    'septiembre', 'octubre', 'noviembre', 'diciembre'
     ];
     return months[monthNumber - 1];
   };
 
+  const getMonthNumber = (monthName) => {
+    const months = {
+      'enero': '01', 'febrero': '02', 'marzo': '03', 'abril': '04',
+      'mayo': '05', 'junio': '06', 'julio': '07', 'agosto': '08',
+      'septiembre': '09', 'octubre': '10', 'noviembre': '11', 'diciembre': '12'
+    };
+    return months[monthName];
+  };
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+    const { value } = e.target;
+    // Parse the selected value into "mm-yyyy" format
+    const [month, year] = value.split('/');
+    const formattedMonth = `${getMonthNumber(month)}-${year}`;
+    
+    // Update the formData state with the formatted month
+    setFormData({ mes: formattedMonth });
+    
     shouldLogRef.current = true; // Set shouldLogRef to true after state update
   };
 
